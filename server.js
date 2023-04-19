@@ -1,0 +1,22 @@
+const express = require('express')
+const Sequelize = require('sequelize')
+const app=express()
+app.use(express.json())
+const CryptoJS = require("crypto-js")
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
+const nodemailer = require("nodemailer")
+const DataTypes = require('sequelize')
+const { user_routes } = require('./routes/user_routes')
+const { service_routes } = require('./routes/service_routes')
+const { category_routes } = require('./routes/category_routes')
+const cors = require('cors')
+app.use(cors())
+const sequelize = new Sequelize("mydb",null,null,{dialect:"sqlite", storage:"database.db"})
+
+user_routes(app)
+service_routes(app)
+category_routes(app)
+
+
+app.listen(5000)
