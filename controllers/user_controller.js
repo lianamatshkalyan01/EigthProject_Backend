@@ -5,7 +5,7 @@ const nodemailer = require("nodemailer")
 
 function user_register(req, res){
     const {email, password}=req.body
-    const emailRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
     if(!emailRegex.test(email)){
         return res.status(400).json({error:"Invalid email format"})
     }
@@ -29,12 +29,15 @@ function user_login(req, res){
     const hashed_password = CryptoJS.SHA256(password).toString()
     User.findOne({where:{email:email}}).then((data)=>{
         console.log(data)
+        if(!data){
+            return res.status(400).json({error: "Wrong credentials"})
+        }
         if(data.email == email && data.password == hashed_password){
             
             let token = generateAccessToken(data.role, data.email, data.is_verified)
-            res.send(JSON.stringify({status: "Logged in", jwt:token, role:data.role}))
+            res.send(JSON.stringify({status: "Logged in", jwt:token}))
         }else{
-            res.send(JSON.stringify({status: "Wrong credentials"}));
+           return res.status(400).json({error: "Wrong credentials"})
         }
     }).catch((err)=> {
         res.status(500).json({error: err.message})

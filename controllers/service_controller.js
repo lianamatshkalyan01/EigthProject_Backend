@@ -9,8 +9,8 @@ function service_get(req, res){
 }
 
 function service_get_id(req, res){
-    const {category_id}=req.params
-    Service.findAll({where:{category_id:category_id}}).then((services)=>{
+    const {service_id}=req.params
+    Service.findAll({where:{id:service_id}}).then((services)=>{
         res.json(services)
     }).catch((err)=>{
         res.status(500).json({error:err.message})
@@ -18,8 +18,8 @@ function service_get_id(req, res){
 }
 
 function service_post(req, res){
-    const {category_id, name, price, image}=req.body
-    Service.create({category_id, name, price, image}).then((service)=>{
+    const {name, price, image, category_id}=req.body
+    Service.create({name, price, image, category_id}).then((service)=>{
         res.status(201).json(service)
     }).catch((err)=>{
         res.status(500).json({err:err.message})
